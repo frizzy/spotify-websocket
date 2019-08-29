@@ -1,0 +1,18 @@
+---
+
+version: '3.7'
+services:
+   spotify-websocket:
+      image: frizzy/spotify-websocket${RPI}:latest
+      volumes:
+         - ./persist:/persist
+      ports:
+         - ${PORT}:3000
+      environment:
+         CLIENT_ID: ${CLIENT_ID}
+         CLIENT_SECRET: ${CLIENT_SECRET}
+         SCOPE: ${SCOPE}
+         REDIRECT_URI: ${REDIRECT_URI}
+         PERSIST: '/persist'
+         PORT: 3000
+      restart: always

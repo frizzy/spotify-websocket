@@ -58,6 +58,7 @@ const api = ({
       if (query) {
         url = `${url}?${queryStringify(query)}`;
       }
+      // console.log(prop.toUpperCase(), url);
       return fetch(url, {
         method: prop.toUpperCase(),
         headers: {

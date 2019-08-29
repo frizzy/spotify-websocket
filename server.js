@@ -123,7 +123,8 @@ wss.on('connection', async ws => {
         spotify.api(sessions[id]).player[parts[1]]({ query, body })
         .then(({ res, body, ...rest }) => {
           send({ id, request_id, request: parts[1], ...body, ...rest }, ws);
-        });
+        })
+        .catch(err => console.error(new Date().toISOString(), { event: `player.${parts[1]}` }, err));
       }
     }
 
@@ -191,8 +192,8 @@ wss.on('connection', async ws => {
         refresh(id);
         res.writeHead(303, { Location: `/?b=${Date.now()}` });
         res.end();
-      });
-    });
+      }).catch(err => console.error(new Date().toISOString(), { event: 'auth_token' }, err));
+    }).catch(err => console.error(new Date().toISOString(), { event: 'user_profile' }, err));
   };
 
   app
