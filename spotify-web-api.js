@@ -121,6 +121,7 @@ const api = ({
         next: ({ query } = {}) => request.post({ path: 'me/player/next', query }, auth),
         recent: ({ query } = {}) => request.get({ path: 'me/player/recently-played', query }, auth),
         playing: ({ query } = {}) => request.get({ path: 'me/player/currently-playing', query }, auth),
+        player: ({ query } = {}) => request.get({ path: 'me/player', query }, auth),
         shuffle: ({ query } = {}) => request.put({ path: 'me/player/shuffle', query, body: {} }, auth),
         repeat: ({ query } = {}) => request.put({ path: 'me/player/repeat', query, body: {} }, auth),
         volume: ({ query } = {}) => request.put({ path: 'me/player/volume', query, body: {} }, auth),

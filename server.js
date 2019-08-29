@@ -87,7 +87,7 @@ const interval = setInterval(() => {
   Object.entries(sessions).forEach(async ([ id, session ]) => {
     delay = 1000;
     try {
-      let { body, ...rest } = await spotify.api(session).player.playing();
+      let { body, ...rest } = await spotify.api(session).player.player();
       tries > 0 && log({ 'ok': true });
       tries = 0;
       send({ id, ...body });
@@ -119,7 +119,6 @@ wss.on('connection', async ws => {
     if (id && id in sessions) {
       const parts = name.split('.');
       if (parts[0] === 'player') {
-        log('Player');
         spotify.api(sessions[id]).player[parts[1]]({ query, body })
         .then(({ res, body, ...rest }) => {
           send({ id, request_id, request: parts[1], ...body, ...rest }, ws);
