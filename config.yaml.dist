@@ -11,3 +11,4 @@ scope:
   - user-read-recently-played
 
 redirect_uri: 'http://localhost:3000/redirect'
+persist: persist
