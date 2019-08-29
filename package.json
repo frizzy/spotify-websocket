@@ -1,0 +1,24 @@
+{
+  "name": "spotify-ws",
+  "version": "1.0.0",
+  "description": "Websocket server for the Spotify Web API",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node -r esm server.js"
+  },
+  "author": "Bernard van Niekerk",
+  "license": "MIT",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "esm": "^3.2.25",
+    "node-fetch": "^2.6.0",
+    "node-persist": "^3.0.5",
+    "nunjucks": "^3.2.0",
+    "polka": "^0.5.2",
+    "uuid": "^3.3.3",
+    "ws": "^7.1.2",
+    "yaml": "^1.6.0"
+  }
+}

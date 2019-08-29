@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+
+
+{% for user in users %}
+  <p>
+    {{ user.display_name }}
+  </p>
+{% endfor %}
+
+
+<a href="/login">Log in</a>
+{% endblock %}
