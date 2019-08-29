@@ -58,7 +58,7 @@ const api = ({
       if (query) {
         url = `${url}?${queryStringify(query)}`;
       }
-      // console.log(prop.toUpperCase(), url);
+      //console.log(prop.toUpperCase(), url);
       return fetch(url, {
         method: prop.toUpperCase(),
         headers: {
@@ -72,6 +72,7 @@ const api = ({
   });
 
   const token = ({ code, refresh_token, redirect_uri, grant_type = 'authorization_code' }) => {
+
     return fetch('https://accounts.spotify.com/api/token', {
       method: 'POST',
       headers: {

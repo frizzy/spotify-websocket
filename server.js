@@ -19,7 +19,7 @@ const render = (res) => (err, out) => {
   res.end(out);
 };
 
-const log = (messages) => console.log(new Date().toISOString(), ...messages);
+const log = (...messages) => console.log(new Date().toISOString(), ...messages);
 
 const { PORT = 3000 } = process.env;
 
@@ -88,7 +88,7 @@ const interval = setInterval(() => {
     delay = 1000;
     try {
       let { body, ...rest } = await spotify.api(session).player.playing();
-      tries > 0 && log([ { 'ok': true } ]);
+      tries > 0 && log({ 'ok': true });
       tries = 0;
       send({ id, ...body });
     } catch (err) {
@@ -101,7 +101,7 @@ const interval = setInterval(() => {
           delay = 60000;
           return;
         }
-        log([ { id }, err ]);
+        log({ id }, err);
         delay = 2000;
         tries += 1;
       }
@@ -112,14 +112,14 @@ const interval = setInterval(() => {
 wss.on('connection', async ws => {
 
   updateClients();
-  log([ { event: 'client_connected' } ]);
+  log({ event: 'client_connected' });
   ws.on('message', data => {
     data = JSON.parse(data);
     const { id, name, query, body, request_id } = data;
     if (id && id in sessions) {
       const parts = name.split('.');
       if (parts[0] === 'player') {
-        log([ 'Player' ]);
+        log('Player');
         spotify.api(sessions[id]).player[parts[1]]({ query, body })
         .then(({ res, body, ...rest }) => {
           send({ id, request_id, request: parts[1], ...body, ...rest }, ws);
@@ -127,15 +127,15 @@ wss.on('connection', async ws => {
         .catch(err => console.error(new Date().toISOString(), { event: `player.${parts[1]}` }, err));
       }
     }
-
-
-    console.log(data);
+    log({ event: 'message' }, data);
   });
 });
 
 (async function () {
   let states = [];
+
   const login = (req, res) => {
+    log({ http: '/login' });
     let { header, state } = spotify.init();
     states.push(state);
     res.writeHead(303, header);
@@ -144,7 +144,7 @@ wss.on('connection', async ws => {
   };
 
   const refresh = (id) => {
-    log([{ id, event: 'refresh_trigger', in: sessions[id].expires_in }]);
+    log({ id, event: 'refresh_trigger', in: sessions[id].expires_in });
     sessions[id].timeout = setTimeout(() => {
       spotify.auth.refresh(sessions[id].refresh_token).then(async ({ access_token, expires_in }) => {
         send({ id, event: 'token_refresh'});
@@ -166,7 +166,7 @@ wss.on('connection', async ws => {
   if (persist) {
     await storage.init({ dir: persist });
     storage.forEach(async function({ key, value }) {
-      log([ { id: key, event: 'persistence loaded' } ]);
+      log({ id: key, event: 'persistence loaded' });
       sessions[key] = {
         ...value,
         expires_in: 0
@@ -176,6 +176,7 @@ wss.on('connection', async ws => {
   }
 
   const redirect = ({ query: { code, state } = {}, ...req }, res) => {
+    log({ http: '/redirect' });
     if (! states.includes(state)) {
       console.error(new Date().toISOString(), 'Auth state not matched.');
       res.writeHead(403);
@@ -192,15 +193,18 @@ wss.on('connection', async ws => {
         refresh(id);
         res.writeHead(303, { Location: `/?b=${Date.now()}` });
         res.end();
-      }).catch(err => console.error(new Date().toISOString(), { event: 'auth_token' }, err));
-    }).catch(err => console.error(new Date().toISOString(), { event: 'user_profile' }, err));
+      }).catch(err => console.error(new Date().toISOString(), { event: 'user_profile' }, err));
+    }).catch(err => {
+      console.error(new Date().toISOString(), { event: 'auth_token' }, err);
+      res.writeHead(403);
+      return res.end(err.message);
+    });
   };
 
   app
     .use(cors({ origin: true }))
     .get('/', async (req, res) => {
-      log([ { http: '/' } ]);
-
+      log({ http: '/' });
       const promises = [];
       const results = await Promise.all(
         Object.keys(sessions).map(id => {
@@ -220,5 +224,5 @@ wss.on('connection', async ws => {
 })();
 
 server.listen(PORT, err => {
-  log([ { event: 'listening', port: PORT } ]);
+  log({ event: 'listening 1', port: PORT });
 });
