@@ -1,11 +1,15 @@
 {
-  "name": "spotify-ws",
+  "name": "spotify-websocket",
   "version": "1.0.0",
-  "description": "Websocket server for the Spotify Web API",
+  "description": "Spotify Web API websocket daemon for DIY home audio control",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node -r esm server.js"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/frizzy/spotify-websocket"
   },
   "author": "Bernard van Niekerk",
   "license": "MIT",
